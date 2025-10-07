@@ -1,0 +1,10 @@
+{
+  "name": "@cre/types",
+  "version": "0.2.0",
+  "main": "index.ts",
+  "type": "module",
+  "license": "MIT",
+  "dependencies": {
+    "zod": "^3.23.8"
+  }
+}

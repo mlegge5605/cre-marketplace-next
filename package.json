@@ -1,0 +1,16 @@
+{
+  "name": "cre-marketplace",
+  "private": true,
+  "packageManager": "pnpm@9.0.0",
+  "scripts": {
+    "dev": "concurrently -n web,api -c auto 'pnpm -C apps/web dev' 'pnpm -C apps/api start:dev'",
+    "build": "pnpm -C apps/web build && pnpm -C apps/api build",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0",
+    "eslint": "^9.0.0",
+    "prettier": "^3.3.3",
+    "typescript": "^5.6.2"
+  }
+}
