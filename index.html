@@ -158,7 +158,10 @@ section {
 /* ─────────────────────────────────────────────────────── */
 #hero {
   min-height: 100svh;
-  background: linear-gradient(160deg, var(--navy) 0%, #0A2850 50%, #0D3870 100%);
+  background:
+    radial-gradient(ellipse 80% 60% at 70% 20%, rgba(0,119,255,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 10% 80%, rgba(255,210,0,0.07) 0%, transparent 55%),
+    linear-gradient(160deg, #061B3A 0%, #071E40 40%, #0A2850 100%);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -167,42 +170,23 @@ section {
   overflow: hidden;
   max-width: 100%;
 }
-.orb {
+/* Subtle dot grid overlay — pure CSS, zero blur, zero contrast cost */
+#hero::before {
+  content: '';
   position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.25;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
   pointer-events: none;
 }
-.orb-1 {
-  width: 400px; height: 400px;
-  background: radial-gradient(circle, #0077FF, transparent);
-  top: -100px; right: -120px;
-  animation: orbFloat1 8s ease-in-out infinite;
-}
-.orb-2 {
-  width: 300px; height: 300px;
-  background: radial-gradient(circle, var(--gold), transparent);
-  bottom: 80px; left: -80px;
-  animation: orbFloat2 10s ease-in-out infinite;
-}
-.orb-3 {
-  width: 200px; height: 200px;
-  background: radial-gradient(circle, #00C8FF, transparent);
-  top: 40%; right: 20%;
-  animation: orbFloat3 12s ease-in-out infinite;
-}
-@keyframes orbFloat1 {
-  0%, 100% { transform: translate(0,0) scale(1); }
-  50% { transform: translate(-30px, 30px) scale(1.08); }
-}
-@keyframes orbFloat2 {
-  0%, 100% { transform: translate(0,0) scale(1); }
-  50% { transform: translate(20px, -25px) scale(1.05); }
-}
-@keyframes orbFloat3 {
-  0%, 100% { transform: translate(0,0); }
-  50% { transform: translate(-15px, 20px); }
+/* Thin geometric accent line */
+#hero::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0.7;
 }
 
 .hero-badge {
@@ -236,30 +220,28 @@ section {
 .hero-wordmark {
   font-size: 0.8rem;
   font-weight: 700;
-  color: rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.75);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   margin-bottom: 16px;
 }
 
-.hero h1 {
+#hero h1 {
   font-size: clamp(2rem, 7vw, 3.2rem);
   font-weight: 800;
-  color: #fff;
+  color: #FFFFFF;
   line-height: 1.12;
   letter-spacing: -0.03em;
   margin-bottom: 20px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
-.hero h1 span {
-  background: linear-gradient(90deg, var(--gold), #FFE566);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+#hero h1 span {
+  color: #FFD200;
 }
 
-.hero p {
+#hero p {
   font-size: 1rem;
-  color: rgba(255,255,255,0.65);
+  color: rgba(255,255,255,0.85);
   line-height: 1.65;
   max-width: 440px;
   margin-bottom: 36px;
@@ -298,8 +280,8 @@ section {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.30);
   color: #fff;
   font-size: 1rem;
   font-weight: 600;
@@ -323,7 +305,7 @@ section {
   align-items: center;
   gap: 10px;
   font-size: 0.83rem;
-  color: rgba(255,255,255,0.55);
+  color: rgba(255,255,255,0.78);
   font-weight: 500;
 }
 .trust-icon {
@@ -1278,7 +1260,7 @@ section {
   .top-nav { display: flex; }
   .page { padding-top: var(--nav-h); padding-bottom: 0; }
   section { max-width: 760px; }
-  #hero { padding: 80px 40px; }
+  #hero { padding: 80px 40px; min-height: calc(100svh - var(--nav-h)); }
   .hero-ctas { flex-direction: row; }
   .hero-trust { flex-direction: row; gap: 24px; }
   .stats-grid { grid-template-columns: repeat(4, 1fr); }
@@ -1350,9 +1332,6 @@ section {
 
   <!-- ── SECTION 1: HERO ── -->
   <section id="hero">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
     <div class="hero-inner">
       <div class="hero-wordmark">RBC Portfolio Wallet</div>
       <div class="hero-badge">Open Banking Preview</div>
