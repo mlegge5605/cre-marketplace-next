@@ -1,0 +1,2289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>RBC Portfolio Wallet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #061B3A;
+  --navy-mid: #0A2850;
+  --rbc-blue: #0051A5;
+  --bright-blue: #0077FF;
+  --gold: #FFD200;
+  --gold-dark: #E6BD00;
+  --bg: #F5F8FC;
+  --bg-card: #FFFFFF;
+  --text-primary: #0D1B2E;
+  --text-secondary: #4A6080;
+  --text-muted: #8FA3B8;
+  --success: #00A878;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+  --border: #E2ECF5;
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 28px;
+  --shadow-sm: 0 2px 12px rgba(6,27,58,0.06);
+  --shadow-md: 0 8px 32px rgba(6,27,58,0.10);
+  --shadow-lg: 0 20px 60px rgba(6,27,58,0.14);
+  --nav-h: 64px;
+  --bottom-nav-h: 72px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overscroll-behavior: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ─── TOP NAV (desktop) ─── */
+.top-nav {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--nav-h);
+  background: rgba(6,27,58,0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  z-index: 100;
+  align-items: center;
+  padding: 0 32px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.top-nav .brand {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+.brand-icon {
+  width: 32px; height: 32px;
+  background: var(--gold);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem; font-weight: 900; color: var(--navy);
+}
+.top-nav-links {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+  list-style: none;
+}
+.top-nav-links a {
+  color: rgba(255,255,255,0.72);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+.top-nav-links a:hover { color: #fff; background: rgba(255,255,255,0.1); }
+.top-nav-links a.active { color: var(--gold); }
+
+/* ─── BOTTOM NAV (mobile) ─── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: var(--bottom-nav-h);
+  background: rgba(6,27,58,0.97);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom);
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: rgba(255,255,255,0.45);
+  text-decoration: none;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 10px;
+  transition: all 0.2s;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+.nav-item svg { width: 22px; height: 22px; }
+.nav-item.active { color: var(--gold); }
+.nav-item:active { transform: scale(0.93); }
+
+/* ─── PAGE WRAPPER ─── */
+.page {
+  padding-top: 0;
+  padding-bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom));
+}
+
+/* ─── SECTION BASE ─── */
+section {
+  padding: 48px 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ─────────────────────────────────────────────────────── */
+/* HERO */
+/* ─────────────────────────────────────────────────────── */
+#hero {
+  min-height: 100svh;
+  background: linear-gradient(160deg, var(--navy) 0%, #0A2850 50%, #0D3870 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 48px 24px 80px;
+  position: relative;
+  overflow: hidden;
+  max-width: 100%;
+}
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.25;
+  pointer-events: none;
+}
+.orb-1 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, #0077FF, transparent);
+  top: -100px; right: -120px;
+  animation: orbFloat1 8s ease-in-out infinite;
+}
+.orb-2 {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, var(--gold), transparent);
+  bottom: 80px; left: -80px;
+  animation: orbFloat2 10s ease-in-out infinite;
+}
+.orb-3 {
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, #00C8FF, transparent);
+  top: 40%; right: 20%;
+  animation: orbFloat3 12s ease-in-out infinite;
+}
+@keyframes orbFloat1 {
+  0%, 100% { transform: translate(0,0) scale(1); }
+  50% { transform: translate(-30px, 30px) scale(1.08); }
+}
+@keyframes orbFloat2 {
+  0%, 100% { transform: translate(0,0) scale(1); }
+  50% { transform: translate(20px, -25px) scale(1.05); }
+}
+@keyframes orbFloat3 {
+  0%, 100% { transform: translate(0,0); }
+  50% { transform: translate(-15px, 20px); }
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,210,0,0.12);
+  border: 1px solid rgba(255,210,0,0.28);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  width: fit-content;
+}
+.hero-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--gold);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.hero-wordmark {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 7vw, 3.2rem);
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  margin-bottom: 20px;
+}
+.hero h1 span {
+  background: linear-gradient(90deg, var(--gold), #FFE566);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero p {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.65;
+  max-width: 440px;
+  margin-bottom: 36px;
+}
+
+.hero-ctas {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 40px;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--gold);
+  color: var(--navy);
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 16px 28px;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1);
+  letter-spacing: -0.01em;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-primary:hover { background: #FFE566; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(255,210,0,0.35); }
+.btn-primary:active { transform: scale(0.97); }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 15px 28px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-secondary:hover { background: rgba(255,255,255,0.13); border-color: rgba(255,255,255,0.3); }
+.btn-secondary:active { transform: scale(0.97); }
+
+.hero-trust {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.83rem;
+  color: rgba(255,255,255,0.55);
+  font-weight: 500;
+}
+.trust-icon {
+  width: 28px; height: 28px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.trust-icon svg { width: 14px; height: 14px; }
+
+/* ─────────────────────────────────────────────────────── */
+/* SECTION HEADER */
+/* ─────────────────────────────────────────────────────── */
+.section-header {
+  margin-bottom: 28px;
+}
+.section-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--rbc-blue);
+  margin-bottom: 8px;
+}
+.section-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+}
+.section-sub {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* ─────────────────────────────────────────────────────── */
+/* CONSENT / TRUST PANEL */
+/* ─────────────────────────────────────────────────────── */
+#consent {
+  background: var(--bg);
+}
+.consent-notice {
+  background: linear-gradient(135deg, rgba(0,81,165,0.06), rgba(0,119,255,0.04));
+  border: 1px solid rgba(0,81,165,0.15);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  margin-bottom: 24px;
+}
+.consent-notice p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+.consent-notice p + p { margin-top: 10px; }
+.consent-notice strong { color: var(--text-primary); }
+
+.toggle-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.toggle-card {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: all 0.25s;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.toggle-card:active { transform: scale(0.985); }
+.toggle-card.active {
+  border-color: var(--rbc-blue);
+  background: linear-gradient(135deg, rgba(0,81,165,0.04), rgba(0,119,255,0.02));
+  box-shadow: 0 0 0 4px rgba(0,119,255,0.07);
+}
+.toggle-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.2rem;
+  transition: all 0.25s;
+}
+.toggle-icon.blue { background: rgba(0,81,165,0.1); }
+.toggle-icon.gold { background: rgba(255,210,0,0.12); }
+.toggle-icon.green { background: rgba(0,168,120,0.1); }
+.toggle-card.active .toggle-icon.blue { background: rgba(0,81,165,0.18); }
+.toggle-text { flex: 1; }
+.toggle-text strong { font-size: 0.95rem; font-weight: 600; display: block; margin-bottom: 3px; }
+.toggle-text span { font-size: 0.8rem; color: var(--text-secondary); }
+.toggle-switch {
+  width: 48px; height: 28px;
+  background: var(--border);
+  border-radius: 14px;
+  position: relative;
+  flex-shrink: 0;
+  transition: background 0.25s;
+}
+.toggle-switch::after {
+  content: '';
+  position: absolute;
+  width: 22px; height: 22px;
+  background: #fff;
+  border-radius: 50%;
+  top: 3px; left: 3px;
+  transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+}
+.toggle-card.active .toggle-switch { background: var(--rbc-blue); }
+.toggle-card.active .toggle-switch::after { transform: translateX(20px); }
+
+/* ─────────────────────────────────────────────────────── */
+/* UPLOAD / CONNECT */
+/* ─────────────────────────────────────────────────────── */
+#upload {
+  background: var(--bg);
+}
+.drop-zone {
+  background: var(--bg-card);
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-lg);
+  padding: 36px 24px;
+  text-align: center;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.drop-zone.hovering {
+  border-color: var(--rbc-blue);
+  background: rgba(0,81,165,0.03);
+}
+.drop-icon {
+  width: 60px; height: 60px;
+  background: linear-gradient(135deg, rgba(0,81,165,0.1), rgba(0,119,255,0.08));
+  border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px;
+}
+.drop-icon svg { width: 28px; height: 28px; color: var(--rbc-blue); }
+.drop-zone h3 { font-size: 1rem; font-weight: 600; margin-bottom: 6px; }
+.drop-zone p { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 20px; }
+
+.upload-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.btn-upload {
+  background: var(--rbc-blue);
+  color: #fff;
+  border: none;
+  padding: 12px 22px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 7px;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-upload:hover { background: var(--bright-blue); transform: translateY(-1px); }
+.btn-upload:active { transform: scale(0.96); }
+
+.btn-connect {
+  background: rgba(0,81,165,0.08);
+  color: var(--rbc-blue);
+  border: 1.5px solid rgba(0,81,165,0.2);
+  padding: 11px 22px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 7px;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-connect:hover { background: rgba(0,81,165,0.13); }
+.btn-connect:active { transform: scale(0.96); }
+
+/* Progress bar */
+.progress-wrap {
+  display: none;
+  margin-top: 20px;
+}
+.progress-wrap.show { display: block; }
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+.progress-bar {
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--rbc-blue), var(--bright-blue));
+  border-radius: 4px;
+  width: 0%;
+  transition: width 0.3s ease;
+}
+.scan-text {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 8px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.scan-dot {
+  width: 6px; height: 6px;
+  background: var(--bright-blue);
+  border-radius: 50%;
+  animation: scanPulse 1.2s ease-in-out infinite;
+}
+@keyframes scanPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.7); }
+}
+
+/* Parsed accounts */
+.parsed-accounts {
+  display: none;
+  margin-top: 20px;
+  flex-direction: column;
+  gap: 10px;
+}
+.parsed-accounts.show { display: flex; }
+.parsed-account-item {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: slideUp 0.3s ease forwards;
+  opacity: 0;
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.account-logo {
+  width: 36px; height: 36px;
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem; font-weight: 800;
+  flex-shrink: 0;
+}
+.al-ws { background: #00C774; color: #fff; }
+.al-sl { background: #E8472A; color: #fff; }
+.al-qt { background: #E8192C; color: #fff; }
+.parsed-info { flex: 1; }
+.parsed-name { font-size: 0.88rem; font-weight: 600; margin-bottom: 2px; }
+.parsed-sub { font-size: 0.75rem; color: var(--text-muted); }
+.confidence-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.conf-high { background: rgba(0,168,120,0.1); color: var(--success); }
+.conf-review { background: rgba(245,158,11,0.12); color: var(--warning); }
+.conf-incomplete { background: rgba(239,68,68,0.1); color: var(--danger); }
+
+.review-btn-wrap {
+  display: none;
+  margin-top: 20px;
+}
+.review-btn-wrap.show { display: block; }
+.btn-review-full {
+  width: 100%;
+  background: linear-gradient(135deg, var(--navy), var(--rbc-blue));
+  color: #fff;
+  border: none;
+  padding: 16px 24px;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+  letter-spacing: -0.01em;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-review-full:hover { opacity: 0.92; transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.btn-review-full:active { transform: scale(0.98); }
+
+/* ─────────────────────────────────────────────────────── */
+/* DASHBOARD */
+/* ─────────────────────────────────────────────────────── */
+#dashboard {
+  background: var(--bg);
+}
+
+.total-value-card {
+  background: linear-gradient(135deg, var(--navy) 0%, #0D3870 100%);
+  border-radius: var(--radius-lg);
+  padding: 28px 24px;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.total-value-card::before {
+  content: '';
+  position: absolute;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(0,119,255,0.2), transparent);
+  top: -60px; right: -40px;
+  border-radius: 50%;
+}
+.tv-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.tv-amount {
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.03em;
+  margin-bottom: 16px;
+}
+.tv-sub {
+  display: flex;
+  gap: 20px;
+}
+.tv-sub-item { }
+.tv-sub-label { font-size: 0.7rem; color: rgba(255,255,255,0.45); text-transform: uppercase; font-weight: 600; letter-spacing: 0.04em; margin-bottom: 2px; }
+.tv-sub-value { font-size: 0.95rem; font-weight: 700; color: rgba(255,255,255,0.9); }
+.tv-sub-value.gold { color: var(--gold); }
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.stat-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  padding: 18px 16px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+.stat-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+.si-blue { background: rgba(0,81,165,0.09); }
+.si-gold { background: rgba(255,210,0,0.1); }
+.si-green { background: rgba(0,168,120,0.09); }
+.si-red { background: rgba(239,68,68,0.08); }
+.stat-val { font-size: 1.2rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.02em; }
+.stat-label { font-size: 0.72rem; color: var(--text-muted); font-weight: 500; margin-top: 2px; }
+
+/* Donut chart */
+.donut-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+.donut-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 20px; }
+.donut-container {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.donut-svg-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+.donut-center {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+.donut-center-val { font-size: 1.1rem; font-weight: 800; color: var(--text-primary); }
+.donut-center-label { font-size: 0.65rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.donut-legend { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+.legend-item { display: flex; align-items: center; gap: 8px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.legend-name { font-size: 0.82rem; font-weight: 500; color: var(--text-secondary); flex: 1; }
+.legend-pct { font-size: 0.85rem; font-weight: 700; color: var(--text-primary); }
+
+/* Asset bars */
+.asset-bar-row {
+  margin-bottom: 10px;
+}
+.asset-bar-header { display: flex; justify-content: space-between; margin-bottom: 5px; }
+.asset-bar-name { font-size: 0.82rem; font-weight: 500; color: var(--text-secondary); }
+.asset-bar-pct { font-size: 0.82rem; font-weight: 700; color: var(--text-primary); }
+.asset-bar-track {
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.asset-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  width: 0;
+  transition: width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Risk meter */
+.risk-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+.risk-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+.risk-comfort {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+}
+.risk-comfort strong { color: var(--text-primary); }
+.risk-track {
+  position: relative;
+  height: 12px;
+  background: linear-gradient(90deg, #00A878, #4CAF50, #FFC107, #FF7043, #E53935);
+  border-radius: 6px;
+  margin-bottom: 10px;
+  overflow: visible;
+}
+.risk-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.risk-labels span { font-size: 0.68rem; color: var(--text-muted); font-weight: 500; }
+.risk-needle {
+  position: absolute;
+  top: -6px;
+  transform: translateX(-50%);
+  width: 24px; height: 24px;
+  background: var(--navy);
+  border: 3px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  transition: left 1.5s cubic-bezier(0.34,1.2,0.64,1);
+  left: 0%;
+}
+.risk-alert {
+  background: rgba(239,68,68,0.07);
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 0.8rem;
+  color: #C62828;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.risk-alert svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; }
+
+/* Accounts breakdown */
+.accounts-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+.accounts-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 16px; }
+.account-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.account-row:last-child { border-bottom: none; }
+.acct-logo {
+  width: 36px; height: 36px;
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.6rem; font-weight: 800;
+  flex-shrink: 0;
+}
+.al-rbc { background: var(--rbc-blue); color: #fff; }
+.al-external { background: var(--bg); border: 1px solid var(--border); color: var(--text-muted); font-size: 0.55rem; }
+.acct-info { flex: 1; }
+.acct-name { font-size: 0.88rem; font-weight: 600; }
+.acct-type { font-size: 0.72rem; color: var(--text-muted); }
+.acct-value { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); text-align: right; }
+.acct-val-label { font-size: 0.68rem; color: var(--text-muted); text-align: right; }
+
+/* ─────────────────────────────────────────────────────── */
+/* INSIGHTS */
+/* ─────────────────────────────────────────────────────── */
+#insights {
+  background: var(--bg);
+}
+.insight-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.insight-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  border: 1.5px solid var(--border);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s;
+}
+.insight-card:hover { box-shadow: var(--shadow-md); }
+.insight-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 18px 18px 16px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.insight-sev {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+.sev-high { background: var(--danger); }
+.sev-med { background: var(--warning); }
+.sev-low { background: var(--success); }
+.insight-main { flex: 1; }
+.insight-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 20px;
+  margin-bottom: 6px;
+  display: inline-block;
+}
+.badge-risk { background: rgba(239,68,68,0.1); color: var(--danger); }
+.badge-diversify { background: rgba(245,158,11,0.12); color: var(--warning); }
+.badge-fees { background: rgba(0,81,165,0.08); color: var(--rbc-blue); }
+.badge-data { background: rgba(143,163,184,0.15); color: var(--text-secondary); }
+.insight-title { font-size: 0.95rem; font-weight: 700; line-height: 1.35; }
+.insight-chevron {
+  margin-left: 4px;
+  flex-shrink: 0;
+  transition: transform 0.25s;
+  color: var(--text-muted);
+}
+.insight-card.open .insight-chevron { transform: rotate(180deg); }
+.insight-body {
+  display: none;
+  padding: 0 18px 18px;
+}
+.insight-card.open .insight-body { display: block; }
+.insight-body p { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.65; margin-bottom: 12px; }
+.insight-why {
+  background: rgba(0,81,165,0.04);
+  border-left: 3px solid var(--rbc-blue);
+  border-radius: 0 8px 8px 0;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+}
+.insight-why-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--rbc-blue); margin-bottom: 4px; }
+.insight-why-text { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.55; }
+.insight-next { font-size: 0.82rem; color: var(--text-primary); font-weight: 600; margin-bottom: 12px; }
+.insight-next::before { content: '→ '; color: var(--rbc-blue); }
+.btn-insight-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0,81,165,0.07);
+  border: 1px solid rgba(0,81,165,0.18);
+  color: var(--rbc-blue);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 9px 16px;
+  border-radius: 9px;
+  cursor: pointer;
+  border-style: solid;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-insight-cta:hover { background: rgba(0,81,165,0.12); }
+
+/* ─────────────────────────────────────────────────────── */
+/* FEE ANALYSIS */
+/* ─────────────────────────────────────────────────────── */
+#fees {
+  background: var(--bg);
+}
+.fee-hero {
+  background: linear-gradient(135deg, #fff7e0, #fffdf0);
+  border: 1.5px solid rgba(255,210,0,0.25);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 16px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+.fee-big { text-align: center; }
+.fee-pct { font-size: 2.8rem; font-weight: 900; color: var(--navy); letter-spacing: -0.04em; }
+.fee-pct-label { font-size: 0.72rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 2px; }
+.fee-divider { width: 1px; background: rgba(255,210,0,0.3); align-self: stretch; }
+.fee-details { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+.fee-detail-item { }
+.fee-detail-val { font-size: 1.1rem; font-weight: 800; color: var(--text-primary); }
+.fee-detail-label { font-size: 0.72rem; color: var(--text-muted); font-weight: 500; }
+
+.fee-compare-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-bottom: 14px;
+  border: 1px solid var(--border);
+}
+.fee-compare-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 16px; }
+.fee-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.fee-row:last-child { margin-bottom: 0; }
+.fee-row-label { font-size: 0.82rem; color: var(--text-secondary); width: 140px; flex-shrink: 0; }
+.fee-track { flex: 1; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.fee-fill { height: 100%; border-radius: 4px; }
+.fee-range-label { font-size: 0.72rem; color: var(--text-muted); white-space: nowrap; }
+
+.fee-disclaimer {
+  background: rgba(143,163,184,0.1);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+  display: flex;
+  gap: 8px;
+}
+.fee-disclaimer::before { content: 'ℹ'; flex-shrink: 0; }
+
+/* ─────────────────────────────────────────────────────── */
+/* PERFORMANCE */
+/* ─────────────────────────────────────────────────────── */
+#performance {
+  background: var(--bg);
+}
+.perf-top {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.perf-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  padding: 18px 16px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+.perf-card.full { grid-column: 1 / -1; }
+.perf-val { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.03em; }
+.perf-val.good { color: var(--success); }
+.perf-val.warn { color: var(--warning); }
+.perf-label { font-size: 0.72rem; color: var(--text-muted); font-weight: 500; margin-top: 3px; }
+
+.chart-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 14px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+.chart-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 20px; }
+.bar-chart-wrap {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  height: 120px;
+  margin-bottom: 12px;
+}
+.bar-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  height: 100%;
+  justify-content: flex-end;
+}
+.bar-pair {
+  display: flex;
+  gap: 4px;
+  align-items: flex-end;
+  width: 100%;
+}
+.bar {
+  flex: 1;
+  border-radius: 6px 6px 0 0;
+  transition: height 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  height: 0;
+}
+.bar.portfolio { background: linear-gradient(180deg, var(--bright-blue), var(--rbc-blue)); }
+.bar.benchmark { background: linear-gradient(180deg, #CBD5E0, #A0AEC0); }
+.bar-label { font-size: 0.72rem; color: var(--text-muted); white-space: nowrap; }
+
+.chart-legend {
+  display: flex;
+  gap: 16px;
+}
+.chart-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+.cl-dot { width: 10px; height: 10px; border-radius: 3px; }
+
+.perf-note {
+  background: rgba(143,163,184,0.1);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+/* ─────────────────────────────────────────────────────── */
+/* ADVISOR OFF-RAMP */
+/* ─────────────────────────────────────────────────────── */
+#advisor {
+  background: var(--bg);
+}
+.advisor-card {
+  background: linear-gradient(160deg, var(--navy), #0D3870);
+  border-radius: var(--radius-lg);
+  padding: 32px 24px;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.advisor-card::before {
+  content: '';
+  position: absolute;
+  width: 250px; height: 250px;
+  background: radial-gradient(circle, rgba(255,210,0,0.1), transparent);
+  bottom: -60px; right: -40px;
+  border-radius: 50%;
+}
+.advisor-card h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+.advisor-card p {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.65;
+  margin-bottom: 24px;
+}
+.advisor-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.btn-advisor-primary {
+  background: var(--gold);
+  color: var(--navy);
+  border: none;
+  padding: 15px 24px;
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-advisor-primary:hover { background: #FFE566; }
+.btn-advisor-secondary {
+  background: rgba(255,255,255,0.09);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #fff;
+  padding: 14px 24px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-advisor-secondary:hover { background: rgba(255,255,255,0.14); }
+
+.advisor-microcopy {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.35);
+  text-align: center;
+  margin-top: 12px;
+}
+
+.advisor-topics {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  border: 1px solid var(--border);
+}
+.advisor-topics h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 14px; }
+.topic-list { display: flex; flex-direction: column; gap: 10px; }
+.topic-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+.topic-item::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--rbc-blue);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ─────────────────────────────────────────────────────── */
+/* ROADMAP */
+/* ─────────────────────────────────────────────────────── */
+#roadmap {
+  background: var(--bg);
+}
+.roadmap-timeline {
+  position: relative;
+  padding-left: 32px;
+}
+.roadmap-timeline::before {
+  content: '';
+  position: absolute;
+  left: 9px; top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--rbc-blue), rgba(0,81,165,0.1));
+}
+.roadmap-item {
+  position: relative;
+  margin-bottom: 28px;
+}
+.roadmap-item:last-child { margin-bottom: 0; }
+.roadmap-dot {
+  position: absolute;
+  left: -27px;
+  top: 3px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 2.5px solid var(--rbc-blue);
+  background: var(--bg-card);
+  display: flex; align-items: center; justify-content: center;
+}
+.roadmap-dot.current {
+  background: var(--rbc-blue);
+}
+.roadmap-dot.future {
+  border-color: var(--border);
+  background: var(--bg);
+}
+.roadmap-time {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--rbc-blue);
+  margin-bottom: 5px;
+}
+.roadmap-item.future .roadmap-time { color: var(--text-muted); }
+.roadmap-title { font-size: 1rem; font-weight: 700; margin-bottom: 5px; }
+.roadmap-desc { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.55; }
+.roadmap-tag {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 20px;
+  margin-top: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.tag-live { background: rgba(0,168,120,0.1); color: var(--success); }
+.tag-soon { background: rgba(0,119,255,0.1); color: var(--bright-blue); }
+.tag-future { background: rgba(143,163,184,0.15); color: var(--text-muted); }
+
+/* ─────────────────────────────────────────────────────── */
+/* FOOTER */
+/* ─────────────────────────────────────────────────────── */
+.page-footer {
+  background: var(--navy);
+  color: rgba(255,255,255,0.4);
+  text-align: center;
+  padding: 32px 24px calc(var(--bottom-nav-h) + 20px + env(safe-area-inset-bottom));
+  font-size: 0.75rem;
+  line-height: 1.7;
+  max-width: 100%;
+}
+.page-footer strong { color: rgba(255,255,255,0.65); }
+
+/* ─────────────────────────────────────────────────────── */
+/* RESPONSIVE: TABLET / DESKTOP */
+/* ─────────────────────────────────────────────────────── */
+@media (min-width: 768px) {
+  .bottom-nav { display: none; }
+  .top-nav { display: flex; }
+  .page { padding-top: var(--nav-h); padding-bottom: 0; }
+  section { max-width: 760px; }
+  #hero { padding: 80px 40px; }
+  .hero-ctas { flex-direction: row; }
+  .hero-trust { flex-direction: row; gap: 24px; }
+  .stats-grid { grid-template-columns: repeat(4, 1fr); }
+  .advisor-btns { flex-direction: row; }
+  .tv-sub { gap: 40px; }
+  .page-footer { padding-bottom: 40px; }
+}
+
+@media (min-width: 1080px) {
+  section { max-width: 900px; padding: 64px 40px; }
+  #hero { max-width: 100%; min-height: 90vh; }
+  .hero-inner { max-width: 560px; }
+}
+
+/* ─────────────────────────────────────────────────────── */
+/* UTILITY */
+/* ─────────────────────────────────────────────────────── */
+.hidden { display: none !important; }
+.reveal { animation: revealSection 0.5s ease forwards; }
+@keyframes revealSection {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Divider between sections */
+.section-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 0 20px;
+}
+
+/* ─────────────────────────────────────────────────────── */
+/* SHIMMER LOADING */
+/* ─────────────────────────────────────────────────────── */
+.shimmer {
+  background: linear-gradient(90deg, var(--border) 25%, #EEF3F8 50%, var(--border) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- TOP NAV (desktop) -->
+<!-- ══════════════════════════════════════════════════════ -->
+<nav class="top-nav" id="topNav">
+  <a href="#hero" class="brand">
+    <div class="brand-icon">RBC</div>
+    Portfolio Wallet
+  </a>
+  <ul class="top-nav-links">
+    <li><a href="#hero" class="nav-link active" data-section="hero">Home</a></li>
+    <li><a href="#upload" class="nav-link" data-section="upload">Upload</a></li>
+    <li><a href="#dashboard" class="nav-link" data-section="dashboard">Dashboard</a></li>
+    <li><a href="#insights" class="nav-link" data-section="insights">Insights</a></li>
+    <li><a href="#advisor" class="nav-link" data-section="advisor">Advisor</a></li>
+  </ul>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- MAIN PAGE -->
+<!-- ══════════════════════════════════════════════════════ -->
+<main class="page" id="mainPage">
+
+  <!-- ── SECTION 1: HERO ── -->
+  <section id="hero">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="hero-inner">
+      <div class="hero-wordmark">RBC Portfolio Wallet</div>
+      <div class="hero-badge">Open Banking Preview</div>
+      <h1>Your whole portfolio.<br><span>One trusted view.</span></h1>
+      <p>Securely bring in investment statements and external accounts to understand your risk, fees, performance, and opportunities — in one place.</p>
+      <div class="hero-ctas">
+        <button class="btn-primary" onclick="scrollToSection('upload')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+          Start portfolio review
+        </button>
+        <button class="btn-secondary" onclick="scrollToSection('insights')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          See sample insights
+        </button>
+      </div>
+      <div class="hero-trust">
+        <div class="trust-item">
+          <div class="trust-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          You control what you share
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          Objective portfolio insights
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
+          Built for Canadian investors
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ── SECTION 2: CONSENT / TRUST ── -->
+  <section id="consent">
+    <div class="section-header">
+      <div class="section-label">Your data, your rules</div>
+      <h2 class="section-title">Privacy by design</h2>
+      <p class="section-sub">RBC Portfolio Wallet is built around transparency and your right to control your information.</p>
+    </div>
+
+    <div class="consent-notice">
+      <p><strong>How your data is used:</strong> RBC only uses the information you upload to generate your portfolio review. Your data is not stored for marketing purposes or shared with third parties without your explicit consent.</p>
+      <p>You can remove uploaded documents or revoke access at any time. Insights provided are <strong>educational and informational</strong> — not personalized investment advice.</p>
+      <p>This tool is designed to help you understand your own portfolio, not to sell you products.</p>
+    </div>
+
+    <div class="toggle-cards">
+      <div class="toggle-card active" onclick="toggleCard(this)" id="tc-upload">
+        <div class="toggle-icon blue">📄</div>
+        <div class="toggle-text">
+          <strong>Upload statements</strong>
+          <span>PDF statements from any institution</span>
+        </div>
+        <div class="toggle-switch"></div>
+      </div>
+      <div class="toggle-card" onclick="toggleCard(this)" id="tc-connect">
+        <div class="toggle-icon gold">🔗</div>
+        <div class="toggle-text">
+          <strong>Connect external accounts</strong>
+          <span>Secure read-only account linking</span>
+        </div>
+        <div class="toggle-switch"></div>
+      </div>
+      <div class="toggle-card" onclick="toggleCard(this)" id="tc-advisor">
+        <div class="toggle-icon green">👤</div>
+        <div class="toggle-text">
+          <strong>Share review with advisor</strong>
+          <span>Optional — you choose what to share</span>
+        </div>
+        <div class="toggle-switch"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ── SECTION 3: UPLOAD ── -->
+  <section id="upload">
+    <div class="section-header">
+      <div class="section-label">Step 1</div>
+      <h2 class="section-title">Add your accounts</h2>
+      <p class="section-sub">Upload investment statements or connect external accounts. We support all major Canadian financial institutions.</p>
+    </div>
+
+    <div class="drop-zone" id="dropZone"
+      ondragover="event.preventDefault(); this.classList.add('hovering')"
+      ondragleave="this.classList.remove('hovering')"
+      ondrop="handleDrop(event)">
+      <div class="drop-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      </div>
+      <h3>Drop statements here</h3>
+      <p>Drag &amp; drop PDF or CSV investment statements, or use the buttons below</p>
+      <div class="upload-actions">
+        <button class="btn-upload" onclick="simulateUpload()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Upload statement
+        </button>
+        <button class="btn-connect" onclick="simulateConnect()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          Connect account
+        </button>
+      </div>
+
+      <div class="progress-wrap" id="progressWrap">
+        <div class="progress-label">
+          <span id="progressLabel">Analysing statements…</span>
+          <span id="progressPct">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="scan-text">
+          <div class="scan-dot"></div>
+          <span id="scanText">Insight engine scanning…</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="parsed-accounts" id="parsedAccounts">
+      <div class="parsed-account-item" style="animation-delay:0.05s">
+        <div class="account-logo al-ws">WS</div>
+        <div class="parsed-info">
+          <div class="parsed-name">Wealthsimple TFSA Statement</div>
+          <div class="parsed-sub">Q1 2025 · 14 holdings detected</div>
+        </div>
+        <div class="confidence-tag conf-high">High confidence</div>
+      </div>
+      <div class="parsed-account-item" style="animation-delay:0.15s">
+        <div class="account-logo al-sl">SL</div>
+        <div class="parsed-info">
+          <div class="parsed-name">Sun Life Group RRSP</div>
+          <div class="parsed-sub">Feb 2025 · 6 funds detected</div>
+        </div>
+        <div class="confidence-tag conf-review">Needs review</div>
+      </div>
+      <div class="parsed-account-item" style="animation-delay:0.25s">
+        <div class="account-logo al-qt">QT</div>
+        <div class="parsed-info">
+          <div class="parsed-name">Questrade Margin Account</div>
+          <div class="parsed-sub">Mar 2025 · Fee data incomplete</div>
+        </div>
+        <div class="confidence-tag conf-incomplete">Fee data incomplete</div>
+      </div>
+    </div>
+
+    <div class="review-btn-wrap" id="reviewBtnWrap">
+      <button class="btn-review-full" onclick="revealDashboard()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Review my portfolio
+      </button>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ── SECTION 4: DASHBOARD ── -->
+  <section id="dashboard">
+    <div class="section-header">
+      <div class="section-label">Portfolio overview</div>
+      <h2 class="section-title">Your full picture</h2>
+      <p class="section-sub">Aggregated across 7 accounts at 5 institutions. Last updated: June 23, 2025.</p>
+    </div>
+
+    <!-- Total value card -->
+    <div class="total-value-card">
+      <div class="tv-label">Total Portfolio Value</div>
+      <div class="tv-amount">$428,750</div>
+      <div class="tv-sub">
+        <div class="tv-sub-item">
+          <div class="tv-sub-label">RBC Assets</div>
+          <div class="tv-sub-value">$182,400</div>
+        </div>
+        <div class="tv-sub-item">
+          <div class="tv-sub-label">External Assets</div>
+          <div class="tv-sub-value gold">$246,350</div>
+        </div>
+        <div class="tv-sub-item">
+          <div class="tv-sub-label">Accounts</div>
+          <div class="tv-sub-value">7</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon si-red">💸</div>
+        <div class="stat-val">$4,920</div>
+        <div class="stat-label">Est. annual fees</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon si-blue">📈</div>
+        <div class="stat-val">+7.8%</div>
+        <div class="stat-label">1-yr est. return</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon si-gold">⚖️</div>
+        <div class="stat-val">1.15%</div>
+        <div class="stat-label">Weighted avg. fee</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon si-green">🎯</div>
+        <div class="stat-val">72%</div>
+        <div class="stat-label">Equity allocation</div>
+      </div>
+    </div>
+
+    <!-- Donut chart: Asset mix -->
+    <div class="donut-card">
+      <h3>Asset mix</h3>
+      <div class="donut-container">
+        <div class="donut-svg-wrap">
+          <svg width="130" height="130" viewBox="0 0 130 130" id="donutChart">
+            <circle cx="65" cy="65" r="50" fill="none" stroke="#E2ECF5" stroke-width="18"/>
+            <!-- Segments animated via JS -->
+            <circle id="seg-equity" cx="65" cy="65" r="50" fill="none" stroke="#0051A5" stroke-width="18"
+              stroke-dasharray="314" stroke-dashoffset="314" stroke-linecap="butt"
+              transform="rotate(-90 65 65)" style="transition:stroke-dashoffset 1.2s ease"/>
+            <circle id="seg-fixed" cx="65" cy="65" r="50" fill="none" stroke="#0077FF" stroke-width="18"
+              stroke-dasharray="314" stroke-dashoffset="314" stroke-linecap="butt"
+              transform="rotate(-90 65 65)" style="transition:stroke-dashoffset 1.2s 0.2s ease"/>
+            <circle id="seg-cash" cx="65" cy="65" r="50" fill="none" stroke="#FFD200" stroke-width="18"
+              stroke-dasharray="314" stroke-dashoffset="314" stroke-linecap="butt"
+              transform="rotate(-90 65 65)" style="transition:stroke-dashoffset 1.2s 0.4s ease"/>
+            <circle id="seg-alt" cx="65" cy="65" r="50" fill="none" stroke="#00A878" stroke-width="18"
+              stroke-dasharray="314" stroke-dashoffset="314" stroke-linecap="butt"
+              transform="rotate(-90 65 65)" style="transition:stroke-dashoffset 1.2s 0.6s ease"/>
+          </svg>
+          <div class="donut-center">
+            <div class="donut-center-val">72%</div>
+            <div class="donut-center-label">Equity</div>
+          </div>
+        </div>
+        <div class="donut-legend">
+          <div class="legend-item"><div class="legend-dot" style="background:#0051A5"></div><div class="legend-name">Equity</div><div class="legend-pct">72%</div></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#0077FF"></div><div class="legend-name">Fixed Income</div><div class="legend-pct">18%</div></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#FFD200"></div><div class="legend-name">Cash</div><div class="legend-pct">7%</div></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#00A878"></div><div class="legend-name">Alternatives</div><div class="legend-pct">3%</div></div>
+        </div>
+      </div>
+
+      <div style="margin-top:20px">
+        <div class="asset-bar-row">
+          <div class="asset-bar-header"><span class="asset-bar-name">Equity</span><span class="asset-bar-pct">72%</span></div>
+          <div class="asset-bar-track"><div class="asset-bar-fill" style="background:#0051A5" data-width="72"></div></div>
+        </div>
+        <div class="asset-bar-row">
+          <div class="asset-bar-header"><span class="asset-bar-name">Fixed Income</span><span class="asset-bar-pct">18%</span></div>
+          <div class="asset-bar-track"><div class="asset-bar-fill" style="background:#0077FF" data-width="18"></div></div>
+        </div>
+        <div class="asset-bar-row">
+          <div class="asset-bar-header"><span class="asset-bar-name">Cash</span><span class="asset-bar-pct">7%</span></div>
+          <div class="asset-bar-track"><div class="asset-bar-fill" style="background:#FFD200" data-width="7"></div></div>
+        </div>
+        <div class="asset-bar-row">
+          <div class="asset-bar-header"><span class="asset-bar-name">Alternatives</span><span class="asset-bar-pct">3%</span></div>
+          <div class="asset-bar-track"><div class="asset-bar-fill" style="background:#00A878" data-width="3"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Risk meter -->
+    <div class="risk-card">
+      <h3>Risk profile</h3>
+      <div class="risk-comfort">Selected comfort level: <strong>Balanced Growth</strong></div>
+      <div class="risk-track">
+        <div class="risk-needle" id="riskNeedle"></div>
+      </div>
+      <div class="risk-labels">
+        <span>Conservative</span>
+        <span>Balanced</span>
+        <span>Growth</span>
+        <span>Aggressive</span>
+      </div>
+      <div class="risk-alert">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span>Your actual portfolio appears <strong>more aggressive</strong> than your selected comfort level. Consider reviewing this with a professional.</span>
+      </div>
+    </div>
+
+    <!-- Accounts breakdown -->
+    <div class="accounts-card">
+      <h3>Account breakdown</h3>
+      <div class="account-row">
+        <div class="acct-logo al-rbc">RBC</div>
+        <div class="acct-info"><div class="acct-name">RBC RRSP</div><div class="acct-type">Registered Retirement Savings</div></div>
+        <div><div class="acct-value">$97,200</div><div class="acct-val-label">RBC</div></div>
+      </div>
+      <div class="account-row">
+        <div class="acct-logo al-rbc">RBC</div>
+        <div class="acct-info"><div class="acct-name">RBC TFSA</div><div class="acct-type">Tax-Free Savings Account</div></div>
+        <div><div class="acct-value">$85,200</div><div class="acct-val-label">RBC</div></div>
+      </div>
+      <div class="account-row">
+        <div class="acct-logo al-ws">WS</div>
+        <div class="acct-info"><div class="acct-name">Wealthsimple TFSA</div><div class="acct-type">Tax-Free Savings Account</div></div>
+        <div><div class="acct-value">$112,400</div><div class="acct-val-label">External</div></div>
+      </div>
+      <div class="account-row">
+        <div class="acct-logo al-sl">SL</div>
+        <div class="acct-info"><div class="acct-name">Sun Life Group RRSP</div><div class="acct-type">Employer-Sponsored RRSP</div></div>
+        <div><div class="acct-value">$68,500</div><div class="acct-val-label">External</div></div>
+      </div>
+      <div class="account-row">
+        <div class="acct-logo al-qt">QT</div>
+        <div class="acct-info"><div class="acct-name">Questrade Margin</div><div class="acct-type">Non-Registered Margin</div></div>
+        <div><div class="acct-value">$38,750</div><div class="acct-val-label">External</div></div>
+      </div>
+      <div class="account-row">
+        <div class="acct-logo al-external" style="background:linear-gradient(135deg,#f0f6ff,#e8f0fe);border:none">MAN</div>
+        <div class="acct-info"><div class="acct-name">Manulife RESP</div><div class="acct-type">Education Savings Plan</div></div>
+        <div><div class="acct-value">$22,700</div><div class="acct-val-label">External</div></div>
+      </div>
+      <div class="account-row">
+        <div class="acct-logo al-rbc">RBC</div>
+        <div class="acct-info"><div class="acct-name">Cash / HISA</div><div class="acct-type">High-Interest Savings</div></div>
+        <div><div class="acct-value">$4,000</div><div class="acct-val-label">RBC</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ── SECTION 5: INSIGHTS ── -->
+  <section id="insights">
+    <div class="section-header">
+      <div class="section-label">Portfolio insights</div>
+      <h2 class="section-title">What we found</h2>
+      <p class="section-sub">Educational estimates based on available statement and account data. Not personalized investment advice.</p>
+    </div>
+
+    <div class="insight-cards">
+
+      <div class="insight-card open">
+        <div class="insight-header" onclick="toggleInsight(this)">
+          <div class="insight-sev sev-high"></div>
+          <div class="insight-main">
+            <div class="insight-badge badge-risk">Risk</div>
+            <div class="insight-title">Your portfolio may be more aggressive than your comfort level</div>
+          </div>
+          <svg class="insight-chevron" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="insight-body">
+          <p>Based on available data, your combined portfolio holds approximately <strong>72% in equities</strong>, which is consistent with a Growth to Aggressive Growth profile. You've indicated a comfort level of Balanced Growth, which typically suggests a 55–65% equity allocation.</p>
+          <div class="insight-why">
+            <div class="insight-why-label">Why this matters</div>
+            <div class="insight-why-text">If markets experience a significant correction, a portfolio more aggressive than your comfort level may cause stress or lead to poorly-timed decisions like selling at a loss.</div>
+          </div>
+          <div class="insight-next">Consider reviewing your target allocation with a financial professional.</div>
+          <button class="btn-insight-cta" onclick="scrollToSection('advisor')">Talk to an RBC professional →</button>
+        </div>
+      </div>
+
+      <div class="insight-card">
+        <div class="insight-header" onclick="toggleInsight(this)">
+          <div class="insight-sev sev-med"></div>
+          <div class="insight-main">
+            <div class="insight-badge badge-diversify">Diversification</div>
+            <div class="insight-title">You may have a high Canadian equity concentration</div>
+          </div>
+          <svg class="insight-chevron" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="insight-body">
+          <p>An estimated <strong>58% of your equity holdings</strong> appear to be in Canadian-listed securities. Canada represents roughly 3–4% of the global equity market, so a significant home-country bias may limit diversification.</p>
+          <div class="insight-why">
+            <div class="insight-why-label">Why this matters</div>
+            <div class="insight-why-text">Over-concentration in one geography can increase volatility relative to a globally diversified portfolio and reduce exposure to growth opportunities in other markets.</div>
+          </div>
+          <div class="insight-next">Consider reviewing geographic diversification in your equity allocation.</div>
+        </div>
+      </div>
+
+      <div class="insight-card">
+        <div class="insight-header" onclick="toggleInsight(this)">
+          <div class="insight-sev sev-med"></div>
+          <div class="insight-main">
+            <div class="insight-badge badge-fees">Fees</div>
+            <div class="insight-title">Estimated fees appear higher than some lower-cost alternatives</div>
+          </div>
+          <svg class="insight-chevron" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="insight-body">
+          <p>Your estimated weighted average fee of <strong>1.15% annually</strong> (~$4,920/year) includes several actively managed mutual funds with MERs between 1.7% and 2.3%. Comparable index ETFs often carry fees of 0.07–0.25%.</p>
+          <div class="insight-why">
+            <div class="insight-why-label">Why this matters</div>
+            <div class="insight-why-text">Over 20 years, a 1% fee difference on a $400,000 portfolio can compound to over $80,000 in additional costs. This is an educational estimate only — fees are one factor among many to consider.</div>
+          </div>
+          <div class="insight-next">Consider reviewing whether current funds align with your goals and risk tolerance.</div>
+          <button class="btn-insight-cta" onclick="scrollToSection('fees')">View fee analysis →</button>
+        </div>
+      </div>
+
+      <div class="insight-card">
+        <div class="insight-header" onclick="toggleInsight(this)">
+          <div class="insight-sev sev-low"></div>
+          <div class="insight-main">
+            <div class="insight-badge badge-diversify">Overlap</div>
+            <div class="insight-title">Several funds may have overlapping holdings</div>
+          </div>
+          <svg class="insight-chevron" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="insight-body">
+          <p>Based on fund descriptions and available holdings data, your Sun Life RRSP and Wealthsimple TFSA appear to hold similar Canadian equity and balanced funds. This may result in unintentional concentration in certain securities.</p>
+          <div class="insight-why">
+            <div class="insight-why-label">Why this matters</div>
+            <div class="insight-why-text">Holding multiple funds with similar mandates can create the appearance of diversification while actually concentrating your exposure. A full overlap analysis requires complete holdings data.</div>
+          </div>
+          <div class="insight-next">Consider requesting a holdings report from each institution for a complete review.</div>
+        </div>
+      </div>
+
+      <div class="insight-card">
+        <div class="insight-header" onclick="toggleInsight(this)">
+          <div class="insight-sev sev-med"></div>
+          <div class="insight-main">
+            <div class="insight-badge badge-diversify">Time horizon</div>
+            <div class="insight-title">Your RESP may be too conservative for its time horizon</div>
+          </div>
+          <svg class="insight-chevron" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="insight-body">
+          <p>Your Manulife RESP ($22,700) appears to be invested primarily in a conservative balanced fund. If the beneficiary is under age 10, there may be 8+ years of growth runway available, which can support a more growth-oriented allocation early on.</p>
+          <div class="insight-why">
+            <div class="insight-why-label">Why this matters</div>
+            <div class="insight-why-text">RESP time-to-use is a key factor in determining appropriate risk. Many professionals suggest gradually reducing equity exposure as the beneficiary approaches post-secondary enrollment age.</div>
+          </div>
+          <div class="insight-next">Consider reviewing your RESP investment strategy relative to the beneficiary's expected enrollment date.</div>
+        </div>
+      </div>
+
+      <div class="insight-card">
+        <div class="insight-header" onclick="toggleInsight(this)">
+          <div class="insight-sev sev-low"></div>
+          <div class="insight-main">
+            <div class="insight-badge badge-data">Data quality</div>
+            <div class="insight-title">Some fee data is missing from external statements</div>
+          </div>
+          <svg class="insight-chevron" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="insight-body">
+          <p>Fee information could not be extracted for approximately <strong>$62,000 of your holdings</strong>, primarily from the Questrade Margin account. This means the 1.15% weighted average fee estimate may be understated.</p>
+          <div class="insight-why">
+            <div class="insight-why-label">Why this matters</div>
+            <div class="insight-why-text">Incomplete fee data limits the accuracy of the portfolio fee analysis. Including a more detailed statement or granting read-only account access would improve insight quality.</div>
+          </div>
+          <div class="insight-next">Upload a more recent or detailed Questrade statement to improve accuracy.</div>
+          <button class="btn-insight-cta" onclick="scrollToSection('upload')">Add more data →</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ── SECTION 6: FEES ── -->
+  <section id="fees">
+    <div class="section-header">
+      <div class="section-label">Fee analysis</div>
+      <h2 class="section-title">What you're paying</h2>
+      <p class="section-sub">Estimates based on available statement and product data. Actual fees may vary.</p>
+    </div>
+
+    <div class="fee-hero">
+      <div class="fee-big">
+        <div class="fee-pct">1.15%</div>
+        <div class="fee-pct-label">Weighted avg. fee</div>
+      </div>
+      <div class="fee-divider"></div>
+      <div class="fee-details">
+        <div class="fee-detail-item">
+          <div class="fee-detail-val">$4,920</div>
+          <div class="fee-detail-label">Est. annual dollar cost</div>
+        </div>
+        <div class="fee-detail-item">
+          <div class="fee-detail-val" style="color:var(--warning)">$62,000</div>
+          <div class="fee-detail-label">Holdings with unknown fees</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fee-compare-card">
+      <h3>Fee ranges by product type</h3>
+
+      <div class="fee-row">
+        <div class="fee-row-label">Cash / GIC</div>
+        <div class="fee-track"><div class="fee-fill" style="width:8%;background:#00A878"></div></div>
+        <div class="fee-range-label" style="color:var(--success)">Low</div>
+      </div>
+      <div class="fee-row">
+        <div class="fee-row-label">ETFs</div>
+        <div class="fee-track"><div class="fee-fill" style="width:15%;background:#0077FF"></div></div>
+        <div class="fee-range-label" style="color:var(--bright-blue)">Low</div>
+      </div>
+      <div class="fee-row">
+        <div class="fee-row-label">Index mutual funds</div>
+        <div class="fee-track"><div class="fee-fill" style="width:28%;background:#3AB0FF"></div></div>
+        <div class="fee-range-label" style="color:#3AB0FF">Low–Med</div>
+      </div>
+      <div class="fee-row">
+        <div class="fee-row-label">Actively managed</div>
+        <div class="fee-track"><div class="fee-fill" style="width:65%;background:var(--warning)"></div></div>
+        <div class="fee-range-label" style="color:var(--warning)">Med–High</div>
+      </div>
+      <div class="fee-row">
+        <div class="fee-row-label">Advice-based</div>
+        <div class="fee-track"><div class="fee-fill" style="width:50%;background:var(--text-muted)"></div></div>
+        <div class="fee-range-label">Varies</div>
+      </div>
+    </div>
+
+    <div class="fee-disclaimer">
+      Fees are estimates based on available statement and product data. MERs, trailing commissions, and transaction costs vary by product and institution. This is an educational estimate only.
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ── SECTION 7: PERFORMANCE ── -->
+  <section id="performance">
+    <div class="section-header">
+      <div class="section-label">Performance snapshot</div>
+      <h2 class="section-title">How you've done</h2>
+      <p class="section-sub">Performance estimates based on available transaction and valuation data. Not a guarantee of future results.</p>
+    </div>
+
+    <div class="perf-top">
+      <div class="perf-card">
+        <div class="perf-val good">+7.8%</div>
+        <div class="perf-label">1-yr est. return</div>
+      </div>
+      <div class="perf-card">
+        <div class="perf-val" style="color:var(--text-muted)">+8.4%</div>
+        <div class="perf-label">Benchmark (blended)</div>
+      </div>
+      <div class="perf-card">
+        <div class="perf-val warn">−0.6%</div>
+        <div class="perf-label">Difference vs. benchmark</div>
+      </div>
+      <div class="perf-card">
+        <div class="perf-val good">+5.9%</div>
+        <div class="perf-label">3-yr annualized est.</div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <h3>Estimated annual returns vs. benchmark</h3>
+      <div class="bar-chart-wrap" id="barChart">
+        <!-- Rendered by JS -->
+      </div>
+      <div class="chart-legend">
+        <div class="chart-legend-item"><div class="cl-dot" style="background:var(--rbc-blue)"></div>Your portfolio</div>
+        <div class="chart-legend-item"><div class="cl-dot" style="background:#A0AEC0"></div>Blended benchmark</div>
+      </div>
+    </div>
+
+    <div class="perf-note">
+      Performance estimates may be affected by deposits, withdrawals, missing transactions, and incomplete statement history. Results shown are educational estimates, not verified returns. Past performance is not indicative of future results.
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ── SECTION 8: ADVISOR ── -->
+  <section id="advisor">
+    <div class="section-header">
+      <div class="section-label">Next steps</div>
+      <h2 class="section-title">Want a second opinion?</h2>
+    </div>
+
+    <div class="advisor-card">
+      <h2>Get a professional perspective</h2>
+      <p>Share your Portfolio Review with an RBC professional. They can help you understand your risk, fees, diversification, tax considerations, and whether your current portfolio still fits your goals — all at no cost to you.</p>
+      <div class="advisor-btns">
+        <button class="btn-advisor-primary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Book a portfolio review
+        </button>
+        <button class="btn-advisor-secondary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+          Share report with advisor
+        </button>
+        <button class="btn-advisor-secondary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download sample review
+        </button>
+      </div>
+      <div class="advisor-microcopy">You choose what to share. No obligation to RBC products or services.</div>
+    </div>
+
+    <div class="advisor-topics">
+      <h3>What a conversation can cover</h3>
+      <div class="topic-list">
+        <div class="topic-item">Risk profile and portfolio alignment</div>
+        <div class="topic-item">Fee efficiency and product alternatives</div>
+        <div class="topic-item">Geographic and sector diversification</div>
+        <div class="topic-item">Tax-advantaged account optimization (RRSP, TFSA, RESP)</div>
+        <div class="topic-item">Retirement and education planning projections</div>
+        <div class="topic-item">Household financial picture and estate considerations</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ── SECTION 9: ROADMAP ── -->
+  <section id="roadmap">
+    <div class="section-header">
+      <div class="section-label">Open banking vision</div>
+      <h2 class="section-title">Where this goes next</h2>
+      <p class="section-sub">Portfolio Wallet is the beginning of a more connected financial experience for Canadians.</p>
+    </div>
+
+    <div class="roadmap-timeline">
+      <div class="roadmap-item">
+        <div class="roadmap-dot current"></div>
+        <div class="roadmap-time">Today</div>
+        <div class="roadmap-title">Upload statements</div>
+        <div class="roadmap-desc">Manually upload PDF and CSV investment statements from any Canadian institution. Insight engine extracts holdings, fees, and performance data.</div>
+        <span class="roadmap-tag tag-live">Available now</span>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot"></div>
+        <div class="roadmap-time">Next</div>
+        <div class="roadmap-title">Secure external account connections</div>
+        <div class="roadmap-desc">Read-only, consent-based connections to external institutions via open banking APIs — no more manual uploads. Your data, shared on your terms.</div>
+        <span class="roadmap-tag tag-soon">Coming soon</span>
+      </div>
+      <div class="roadmap-item future">
+        <div class="roadmap-dot future"></div>
+        <div class="roadmap-time">Future</div>
+        <div class="roadmap-title">Real-time portfolio monitoring</div>
+        <div class="roadmap-desc">Live portfolio valuation across all connected accounts, with automated daily refresh and consolidated reporting.</div>
+        <span class="roadmap-tag tag-future">Planned</span>
+      </div>
+      <div class="roadmap-item future">
+        <div class="roadmap-dot future"></div>
+        <div class="roadmap-time">Future</div>
+        <div class="roadmap-title">Proactive alerts and goal-based planning</div>
+        <div class="roadmap-desc">Smart notifications when your portfolio drifts from targets, fee thresholds are crossed, or life goals need a check-in.</div>
+        <span class="roadmap-tag tag-future">Planned</span>
+      </div>
+      <div class="roadmap-item future">
+        <div class="roadmap-dot future"></div>
+        <div class="roadmap-time">Future</div>
+        <div class="roadmap-title">Advisor-ready household view</div>
+        <div class="roadmap-desc">A complete household financial picture — investments, insurance, estate — ready to share with an RBC professional when you choose.</div>
+        <span class="roadmap-tag tag-future">Planned</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer class="page-footer">
+    <strong>RBC Portfolio Wallet</strong> — Concept prototype for internal review only.<br>
+    This is not a financial product or service. Insights are educational estimates based on available data.<br>
+    Nothing in this prototype constitutes personalized investment advice.<br><br>
+    <strong>RBC Royal Bank of Canada</strong> · Built for Canadian investors<br>
+    Open Banking Innovation — Prototype v0.1
+  </footer>
+
+</main>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- BOTTOM NAV (mobile) -->
+<!-- ══════════════════════════════════════════════════════ -->
+<nav class="bottom-nav" id="bottomNav">
+  <button class="nav-item active" onclick="scrollToSection('hero')" data-section="hero">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Home
+  </button>
+  <button class="nav-item" onclick="scrollToSection('upload')" data-section="upload">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+    Upload
+  </button>
+  <button class="nav-item" onclick="scrollToSection('dashboard')" data-section="dashboard">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    Dashboard
+  </button>
+  <button class="nav-item" onclick="scrollToSection('insights')" data-section="insights">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    Insights
+  </button>
+  <button class="nav-item" onclick="scrollToSection('advisor')" data-section="advisor">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    Advisor
+  </button>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- JAVASCRIPT -->
+<!-- ══════════════════════════════════════════════════════ -->
+<script>
+/* ── SCROLL TO SECTION ── */
+function scrollToSection(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const isDesktop = window.innerWidth >= 768;
+  const offset = isDesktop ? 72 : 12;
+  const top = el.getBoundingClientRect().top + window.scrollY - offset;
+  window.scrollTo({ top, behavior: 'smooth' });
+}
+
+/* ── TOGGLE CONSENT CARDS ── */
+function toggleCard(card) {
+  card.classList.toggle('active');
+}
+
+/* ── INSIGHT EXPAND/COLLAPSE ── */
+function toggleInsight(header) {
+  const card = header.closest('.insight-card');
+  card.classList.toggle('open');
+}
+
+/* ── ACTIVE NAV ── */
+const sections = ['hero','consent','upload','dashboard','insights','fees','performance','advisor','roadmap'];
+function updateActiveNav() {
+  const scrollY = window.scrollY + window.innerHeight * 0.3;
+  let active = 'hero';
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.offsetTop <= scrollY) active = id;
+  });
+  document.querySelectorAll('.nav-item, .nav-link').forEach(el => {
+    const ds = el.dataset.section;
+    if (ds) {
+      el.classList.toggle('active', ds === active);
+    }
+  });
+}
+window.addEventListener('scroll', updateActiveNav, { passive: true });
+
+/* ── UPLOAD SIMULATION ── */
+let uploadRunning = false;
+function simulateUpload() {
+  if (uploadRunning) return;
+  uploadRunning = true;
+  const wrap = document.getElementById('progressWrap');
+  const fill = document.getElementById('progressFill');
+  const pct = document.getElementById('progressPct');
+  const scanText = document.getElementById('scanText');
+  const label = document.getElementById('progressLabel');
+  wrap.classList.add('show');
+
+  const messages = [
+    'Reading statement headers…',
+    'Extracting holdings data…',
+    'Identifying fund types…',
+    'Calculating fee estimates…',
+    'Matching benchmark data…',
+    'Generating insights…',
+    'Analysis complete ✓'
+  ];
+
+  let progress = 0;
+  let msgIdx = 0;
+  const interval = setInterval(() => {
+    progress += Math.random() * 8 + 4;
+    if (progress > 100) progress = 100;
+    fill.style.width = progress + '%';
+    pct.textContent = Math.round(progress) + '%';
+    const newIdx = Math.floor((progress / 100) * (messages.length - 1));
+    if (newIdx !== msgIdx) { msgIdx = newIdx; scanText.textContent = messages[msgIdx]; }
+    if (progress >= 100) {
+      clearInterval(interval);
+      label.textContent = 'Complete — 3 accounts analysed';
+      setTimeout(showParsedAccounts, 400);
+    }
+  }, 200);
+}
+
+function simulateConnect() {
+  simulateUpload();
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('dropZone').classList.remove('hovering');
+  simulateUpload();
+}
+
+function showParsedAccounts() {
+  const accounts = document.getElementById('parsedAccounts');
+  const reviewWrap = document.getElementById('reviewBtnWrap');
+  accounts.classList.add('show');
+  reviewWrap.classList.add('show');
+  // Stagger animation
+  accounts.querySelectorAll('.parsed-account-item').forEach((el, i) => {
+    el.style.animationDelay = (i * 0.12) + 's';
+  });
+}
+
+/* ── REVEAL DASHBOARD ── */
+function revealDashboard() {
+  scrollToSection('dashboard');
+  animateDashboard();
+}
+
+/* ── DASHBOARD ANIMATIONS ── */
+let dashAnimated = false;
+function animateDashboard() {
+  if (dashAnimated) return;
+  dashAnimated = true;
+  // Asset bars
+  document.querySelectorAll('.asset-bar-fill').forEach(bar => {
+    bar.style.width = bar.dataset.width + '%';
+  });
+  // Donut chart
+  animateDonut();
+  // Risk needle (80% across = aggressive growth)
+  setTimeout(() => {
+    document.getElementById('riskNeedle').style.left = '80%';
+  }, 400);
+  // Bar chart
+  animateBarChart();
+}
+
+function animateDonut() {
+  const circum = 2 * Math.PI * 50; // ~314
+  const segments = [
+    { id: 'seg-equity', pct: 0.72, color: '#0051A5', offset: 0 },
+    { id: 'seg-fixed',  pct: 0.18, color: '#0077FF', offset: 0.72 },
+    { id: 'seg-cash',   pct: 0.07, color: '#FFD200', offset: 0.90 },
+    { id: 'seg-alt',    pct: 0.03, color: '#00A878', offset: 0.97 },
+  ];
+  segments.forEach(seg => {
+    const el = document.getElementById(seg.id);
+    if (!el) return;
+    const len = seg.pct * circum;
+    const gap = circum - len;
+    el.setAttribute('stroke-dasharray', len + ' ' + gap);
+    // rotate so segment starts at right position
+    const rotateDeg = -90 + (seg.offset * 360);
+    el.setAttribute('transform', `rotate(${rotateDeg} 65 65)`);
+    el.setAttribute('stroke-dashoffset', '0');
+  });
+}
+
+/* ── BAR CHART ── */
+const chartData = [
+  { year: '2021', portfolio: 14.2, benchmark: 15.1 },
+  { year: '2022', portfolio: -8.4, benchmark: -9.1 },
+  { year: '2023', portfolio: 11.7, benchmark: 12.8 },
+  { year: '2024', portfolio: 9.2,  benchmark: 10.0 },
+  { year: '2025', portfolio: 7.8,  benchmark: 8.4  },
+];
+
+function animateBarChart() {
+  const container = document.getElementById('barChart');
+  if (!container || container.dataset.rendered) return;
+  container.dataset.rendered = 'true';
+  container.innerHTML = '';
+  const maxAbs = 16;
+
+  chartData.forEach(d => {
+    const group = document.createElement('div');
+    group.className = 'bar-group';
+
+    const pair = document.createElement('div');
+    pair.className = 'bar-pair';
+
+    const pBar = document.createElement('div');
+    pBar.className = 'bar portfolio';
+    const pHPct = (Math.abs(d.portfolio) / maxAbs) * 100;
+    pBar.style.height = '0px';
+    pBar.style.maxHeight = '100px';
+    pBar.title = `Portfolio: ${d.portfolio}%`;
+
+    const bBar = document.createElement('div');
+    bBar.className = 'bar benchmark';
+    const bHPct = (Math.abs(d.benchmark) / maxAbs) * 100;
+    bBar.style.height = '0px';
+    bBar.style.maxHeight = '100px';
+    bBar.title = `Benchmark: ${d.benchmark}%`;
+
+    pair.appendChild(pBar);
+    pair.appendChild(bBar);
+
+    const label = document.createElement('div');
+    label.className = 'bar-label';
+    label.textContent = d.year;
+
+    group.appendChild(pair);
+    group.appendChild(label);
+    container.appendChild(group);
+
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        pBar.style.height = pHPct + 'px';
+        pBar.style.transition = 'height 1s cubic-bezier(0.25,0.46,0.45,0.94)';
+        bBar.style.height = bHPct + 'px';
+        bBar.style.transition = 'height 1s 0.1s cubic-bezier(0.25,0.46,0.45,0.94)';
+      }, 100);
+    });
+  });
+}
+
+/* ── INTERSECTION OBSERVER for dashboard ── */
+const dashSection = document.getElementById('dashboard');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      animateDashboard();
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15 });
+if (dashSection) observer.observe(dashSection);
+
+/* ── INIT ── */
+window.addEventListener('DOMContentLoaded', () => {
+  updateActiveNav();
+  // Pre-initialise donut (will animate on scroll-in)
+  const circum = 2 * Math.PI * 50;
+  ['seg-equity','seg-fixed','seg-cash','seg-alt'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.setAttribute('stroke-dasharray', '0 ' + circum);
+      el.setAttribute('stroke-dashoffset', '0');
+    }
+  });
+});
+</script>
+</body>
+</html>
